@@ -45,8 +45,20 @@ else
   echo "$(docker --version) is installed."
 fi
 
-# Create necessary directories
-create_directory "/opt/anpr/resources"
+# Creating volumes
+volumes=("anpr_service_data")
+for volume in "${volumes[@]}"
+do
+if [[ "$(docker volume ls | grep "${volume}")" == "" ]]; then
+  echo "Creating volume ${volume}..."
+  docker volume create $volume > /dev/null
+  sleep 0.2
+  echo "Done."
+else
+  sleep 0.2
+  echo "Volume ${volume} already exists."
+fi
+done
 
 # Create bridge network
 networks=("anpr_net")
